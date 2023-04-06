@@ -2,8 +2,8 @@
 
 int main()
 {
-    Point A(1,2);
-    Point B(3,4);
+    Point A(1,1);
+    Point B(3,1);
 
     std::vector<Point> toto = {A,B};
 
@@ -16,7 +16,14 @@ int main()
 
     std::vector<std::vector<int>> tab_scores = A.Hough_r_theta(toto);
 
-    affiche(tab_scores);
+    std::cout<< tab_scores.size()<<std::endl;
+    std::cout<< tab_scores[0].size()<<std::endl;
+
+    //affiche(tab_scores);
+
+    tracer_droite(tab_scores, "test2.ppm");
+
+
     
     
     

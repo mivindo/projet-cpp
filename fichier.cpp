@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <fstream>
 #include <string>
+#include <algorithm>
 
 #include "fichier.hpp"
 
@@ -84,15 +85,22 @@ std::vector<std::vector<int>> Point::Hough_x_y(std::vector<Point> tab_x_y)
     return scores;
 }
 
+std::vector<std::vector<int>> Point::Droite_detectee(std::vector<std::vector<int>> scores)
+{
+    
+}
 
 std::vector<std::vector<int>> Point::Hough_r_theta(std::vector<Point> tab_x_y)
-{/*Fonction qui calcule l'ensemble de points (m,p) qui vérifient 
+{
+    /*Fonction qui calcule l'ensemble de points (m,p) qui vérifient 
     l'équation p = -xm+y pour chaque point de tab_x_y et renvoie tableau 2D contenant les scores 
     de chaque point selon le nombre de passages par ce point*/
 
-    int R = 3;
-    double pas = 1e-2;
-    double pas_theta = M_PI/6;
+    int N = 2;
+    int R = 2*N+1;
+
+    std::vector<int> r;
+    std::vector<int> thet;
     
     std::vector<std::vector<int>> scores;
 
@@ -100,36 +108,40 @@ std::vector<std::vector<int>> Point::Hough_r_theta(std::vector<Point> tab_x_y)
     {
         if(scores.empty()==1)
         {
-            double r = -R;
-            while(r < R)
+            double theta = 0;
+            while(theta < 180)
+            {   
+                r.push_back(int(100.*(tab_x_y[i].x*cos(theta*M_PI/180)+tab_x_y[i].y*sin(theta*M_PI/180))));
+                thet.push_back(theta);
+                theta +=1;
+            }
+
+            int min_r = *min_element(r.begin(), r.end());
+            int max_r = *max_element(r.begin(), r.end());
+
+            std::cout<<min_r<<std::endl;
+            std::cout<<max_r<<std::endl;
+
+            for(int rr =min_r; rr!= max_r; ++rr)
             {
                 std::vector<int> v1;
-
-                std::cout<<"r="<<r<<std::endl;
-
-                double theta = 0;
-
-                while(theta < M_PI)
-                {
-                    std::cout<<"theta="<<theta<<std::endl;
-
-                    if (r == tab_x_y[i].x*cos(theta)+tab_x_y[i].y*sin(theta))
-                    {
+                for(unsigned int theta = 0; theta != 180; ++theta)
+                {                    
+                    if(rr == r[theta])  
+                    { 
                         v1.push_back(1);
                     }
                     else
                     {
                         v1.push_back(0);
-                    }
-
-                    theta += pas_theta;
+                    }                
                 }
-                scores.push_back(v1);
 
-                r += pas;
+                scores.push_back(v1);
             }
 
             std::cout<<"scores de A faits"<<std::endl;
+
         }
         // else
         // {
@@ -137,22 +149,7 @@ std::vector<std::vector<int>> Point::Hough_r_theta(std::vector<Point> tab_x_y)
         //     {
         //         for(int j =0; j!= scores[0].size(); ++j)
         //         {
-        //             double r = 0;
-        //             while(r < R)
-        //             {
-        //                 double theta = 0;
-        //                 while(theta < 2*M_PI)
-        //                 {
-        //                     if (r == tab_x_y[i].x*cos(theta)+tab_x_y[i].y*sin(theta))
-        //                     {
-        //                         scores[i][j] += 1;
-        //                     }
-
-        //                     theta += pas_theta;
-        //                 }
-
-        //                 r += pas;
-        //             }
+                    
         //         }
         //     }
         // }
@@ -168,7 +165,7 @@ Point::~Point(){}
 
 void tracer_droite(std::vector<std::vector<int>> scores, const char* filename)
 {
-    /*Pour le moment elle lit une image ppm*/
+    /*Elle crée l'image ppm à partir de la matrice des scores*/
 
     const int lignes = scores[0].size();
     const int colonnes = scores.size();
