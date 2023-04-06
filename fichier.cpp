@@ -85,9 +85,69 @@ std::vector<std::vector<int>> Point::Hough_x_y(std::vector<Point> tab_x_y)
     return scores;
 }
 
-std::vector<std::vector<int>> Point::Droite_detectee(std::vector<std::vector<int>> scores)
+Point Point::Point_score_max(std::vector<std::vector<int>> scores)
 {
+    auto result = max_element(scores.begin(), scores.end(), [](const std::vector<int>& a, const std::vector<int>& b) {
+            return *max_element(a.begin(), a.end()) < *max_element(b.begin(), b.end());
+        });
+
+    int row = distance(scores.begin(), result);
+    int col = distance(result->begin(), max_element(result->begin(), result->end()));
+
+    int N = scores.size()/2;
+
+    Point m_p = Point(row-N, col-N);
+
+    return m_p;
+}
+
+std::vector<std::vector<int>> Point::Droite_detectee_m_p(std::vector<std::vector<int>> scores, Point m_p, std::vector<Point> tab_x_y)
+{
+    int N = scores.size()/2;
+
+    std::vector<std::vector<int>> droite_detectee;
+
+   
+    if(droite_detectee.empty()==1)
+    {
+        for(int x = -N; x != N+1; ++x)
+        {
+            std::vector<int> v1;
+
+            for(int y = -N; y != N+1; ++y)
+            {
+                if (y == -m_p.x*x+m_p.y)
+                {
+                    v1.push_back(1);
+                }
+                else
+                {
+                    v1.push_back(0);
+                }
+            }
+            droite_detectee.push_back(v1);
+        }
+    }
+    for(unsigned int i =0; i != tab_x_y.size(); ++i)
+    {
+        if(droite_detectee.empty()==0)
+        {  
+            for(int x = -N; x != N+1; ++x)
+            {
+                for(int y = -N; y != N+1; ++y)
+                {
+                    Point p = Point(x,y);
+                    if ((p == tab_x_y[i])==1)
+                    {   
+                        droite_detectee[x+N][y+N] += 1;
+                    }
+                }
+            }
+            
+        }
+    }
     
+    return droite_detectee;  
 }
 
 std::vector<std::vector<int>> Point::Hough_r_theta(std::vector<Point> tab_x_y)
@@ -98,6 +158,7 @@ std::vector<std::vector<int>> Point::Hough_r_theta(std::vector<Point> tab_x_y)
 
     int N = 2;
     int R = 2*N+1;
+    double pas_theta = M_PI/6;
 
     std::vector<int> r;
     std::vector<int> thet;
@@ -109,11 +170,12 @@ std::vector<std::vector<int>> Point::Hough_r_theta(std::vector<Point> tab_x_y)
         if(scores.empty()==1)
         {
             double theta = 0;
-            while(theta < 180)
+            while(theta < M_PI)
             {   
-                r.push_back(int(100.*(tab_x_y[i].x*cos(theta*M_PI/180)+tab_x_y[i].y*sin(theta*M_PI/180))));
+                r.push_back(int(100.*(tab_x_y[i].x*cos(theta)+tab_x_y[i].y*sin(theta))));
                 thet.push_back(theta);
-                theta +=1;
+                theta +=pas_theta;
+                std::cout<<"r="<<int(100.*(tab_x_y[i].x*cos(theta)+tab_x_y[i].y*sin(theta)))<<"theta="<<theta<<std::endl;
             }
 
             int min_r = *min_element(r.begin(), r.end());
@@ -122,19 +184,22 @@ std::vector<std::vector<int>> Point::Hough_r_theta(std::vector<Point> tab_x_y)
             std::cout<<min_r<<std::endl;
             std::cout<<max_r<<std::endl;
 
-            for(int rr =min_r; rr!= max_r; ++rr)
+            for(int rr =0; rr!= r.size(); ++rr)
             {
                 std::vector<int> v1;
-                for(unsigned int theta = 0; theta != 180; ++theta)
-                {                    
-                    if(rr == r[theta])  
-                    { 
-                        v1.push_back(1);
-                    }
-                    else
-                    {
-                        v1.push_back(0);
-                    }                
+                 
+                for(unsigned int theta = 0; theta != thet.size(); ++theta)
+                {                   
+                        
+                        if(r[rr] == r[theta])  
+                        { 
+                            v1.push_back(1);
+                        }
+                        else
+                        {
+                            v1.push_back(0);
+                        }   
+
                 }
 
                 scores.push_back(v1);
@@ -232,19 +297,6 @@ void affiche(std::vector<int> vect)  //surcharge de affiche pour vecteurs d'enti
         std::cout<<elem<<" ";
     }
     std::cout<<std::endl;
-}
-
-void affiche(std::vector<std::vector<Point>> vect)  //fonction pour afficher un vecteur de points
-{
-    std::cout<<"vect=";
-    for (unsigned int i = 0; i != vect.size(); ++i) 
-    {
-        for (unsigned int j = 0; j != vect[i].size(); ++j)
-        {
-            std::cout << vect[i][j] << " ";
-        }
-        std::cout << std::endl;
-    }
 }
 
 void affiche(std::vector<std::vector<int>> vect)  //fonction pour afficher un vecteur de vecteurs d'entiers

@@ -24,9 +24,12 @@ class Point
     bool operator==(Point p);
 
     std::vector<std::vector<int>> Hough_x_y(std::vector<Point> tab_x_y);
-    std::vector<std::vector<int>> Droite_detectee(std::vector<std::vector<int>> scores);
+    Point Point_score_max(std::vector<std::vector<int>> scores);
+    std::vector<std::vector<int>> Droite_detectee_m_p(std::vector<std::vector<int>> scores, Point m_p, std::vector<Point> tab_x_y);
 
     std::vector<std::vector<int>> Hough_r_theta(std::vector<Point> tab_x_y);
+
+    
     
     
     friend std::ostream & operator <<(std::ostream & out, const Point & p);
