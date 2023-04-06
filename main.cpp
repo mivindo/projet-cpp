@@ -20,6 +20,7 @@ int main()
 
     /************** TRANSFORMATION DE HOUGH (m,p) ---> (x,y) ***************/
 
+
     /************** DÉTECTION SUR UNE DROITE ***************/
 
     // std::vector<std::vector<int>> tab_scores = A.Hough_x_y(toto,N);
@@ -38,27 +39,29 @@ int main()
 
     // tracer_droite(tab_scores, "test1.ppm");
 
+
     /************** DÉTECTION SUR UN ENSEMBLE DE DROITES ***************/
 
-    std::vector<std::vector<int>> tab_scores = A.Hough_x_y(titi,N);
+    // std::vector<std::vector<int>> tab_scores = A.Hough_x_y(titi,N);
 
-    std::vector<Point> inter = Point_score_max(tab_scores, titi);
+    // std::vector<Point> inter = Point_score_max(tab_scores, titi);
 
-    affiche(inter);
+    // affiche(inter);
 
-    std::vector<std::vector<int>> droite_A_B = A.Droite_detectee_m_p(tab_scores, inter, titi);
+    // std::vector<std::vector<int>> droite_A_B = A.Droite_detectee_m_p(tab_scores, inter, titi);
 
-    tracer_droite(droite_A_B, "droite_détectée.ppm", titi);
+    // tracer_droite(droite_A_B, "droite_détectée.ppm", titi);
 
-    affiche(tab_scores);
+    // affiche(tab_scores);
 
-    affiche(droite_A_B);
+    // affiche(droite_A_B);
 
-    tracer_droite(tab_scores, "test_n_droites.ppm", titi);
+    // tracer_droite(tab_scores, "test_n_droites.ppm", titi);
 
 
 
     /************** TRANSFORMATION DE HOUGH (r,theta) ---> (x,y) ***************/
+    
 
     // std::vector<std::vector<int>> tab_scores = A.Hough_r_theta(toto, N);
 

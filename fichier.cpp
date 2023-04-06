@@ -141,6 +141,11 @@ std::vector<std::vector<int>> Point::Hough_x_y(std::vector<std::vector<Point>> t
 
 std::vector<std::vector<int>> Point::Droite_detectee_m_p(std::vector<std::vector<int>> scores, Point m_p, std::vector<Point> tab_x_y)
 {
+    /*Fonction qui renvoie la matrice des droites détectées à partir de 
+    la matrice des scores, le point (m,p) et accessoirement, pour des raisons esthétiques 
+    les vecteur des points*/
+
+
     int N = scores.size()/2;
 
     std::vector<std::vector<int>> droite_detectee;
@@ -191,6 +196,10 @@ std::vector<std::vector<int>> Point::Droite_detectee_m_p(std::vector<std::vector
 
 std::vector<std::vector<int>> Point::Droite_detectee_m_p(std::vector<std::vector<int>> scores, std::vector<Point>  scores_max, std::vector<std::vector<Point>> tab_x_y)
 {
+    /*Fonction qui renvoie la matrice des droites détectées à partir de la matrice des scores, 
+    du vecteur des points (m,p) et du vecteur des droites (vecteurs de points)*/
+
+
     int N = scores.size()/2;
 
     std::vector<std::vector<int>> droite_detectee;
@@ -228,25 +237,6 @@ std::vector<std::vector<int>> Point::Droite_detectee_m_p(std::vector<std::vector
                     if (y == -scores_max[k].x*x+scores_max[k].y)
                     {
                         droite_detectee[x+N][y+N] += 1;
-                    }
-                }
-            }
-            
-        }
-        
-        if(droite_detectee.empty()==0)
-        {  
-            for(int x = -N; x != N+1; ++x)
-            {
-                for(int y = -N; y != N+1; ++y)
-                {
-                    for(unsigned int j = 0; j != tab_x_y[k].size(); ++j)
-                    {
-                        Point p = Point(x,y);
-                        if ((p == tab_x_y[k][j])==1)
-                        {   
-                            droite_detectee[x+N][y+N] += 1;
-                        }
                     }
                 }
             }
@@ -337,6 +327,10 @@ Point::~Point(){}
 
 Point Point_score_max(std::vector<std::vector<int>> scores)
 {
+    /*Fonction qui prend en argument la matrice des scores et renvoie
+    le point correspondant au score maximal de la matrice des scores*/
+
+
     auto result = max_element(scores.begin(), scores.end(), [](const std::vector<int>& a, const std::vector<int>& b) {
             return *max_element(a.begin(), a.end()) < *max_element(b.begin(), b.end());
         });
@@ -354,6 +348,10 @@ Point Point_score_max(std::vector<std::vector<int>> scores)
 
 std::vector<Point> Point_score_max(std::vector<std::vector<int>> scores, std::vector<std::vector<Point>> tab_x_y)
 {
+    /*Fonction qui prend en argument la matrice des scores et renvoie
+    le vecteur des points correspondant aux score maximaux de la matrice des scores*/
+
+
     std::vector<Point> scores_max;
 
     for(unsigned int i = 0; i != tab_x_y.size(); ++i)
