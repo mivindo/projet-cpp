@@ -8,6 +8,7 @@
 #include "fichier.hpp"
 
 typedef struct {int red; int green; int blue;} pixel;
+
 //on définira dans ce fichier les définitions des fonctions
 
 Point::Point()
@@ -34,13 +35,12 @@ bool Point::operator==(Point p)
     return ((x == p.x) && (y == p.y));
 }
 
-std::vector<std::vector<int>> Point::Hough_x_y(std::vector<Point> tab_x_y)
+std::vector<std::vector<int>> Point::Hough_x_y(std::vector<Point> tab_x_y, int N)
 {
     /*Fonction qui calcule l'ensemble de points (m,p) qui vérifient 
     l'équation p = -xm+y pour chaque point de tab_x_y et renvoie tableau 2D contenant les scores 
     de chaque point selon le nombre de passages par ce point*/
 
-    int N = 15;
     
     std::vector<std::vector<int>> scores;
 
@@ -85,20 +85,58 @@ std::vector<std::vector<int>> Point::Hough_x_y(std::vector<Point> tab_x_y)
     return scores;
 }
 
-Point Point::Point_score_max(std::vector<std::vector<int>> scores)
+std::vector<std::vector<int>> Point::Hough_x_y(std::vector<std::vector<Point>> tab_x_y, int N)
 {
-    auto result = max_element(scores.begin(), scores.end(), [](const std::vector<int>& a, const std::vector<int>& b) {
-            return *max_element(a.begin(), a.end()) < *max_element(b.begin(), b.end());
-        });
+    /*Fonction qui calcule l'ensemble de points (m,p) qui vérifient 
+    l'équation p = -xm+y pour chaque ensemble de points (droite) de tab_x_y 
+    et renvoie un tableau 2D contenant les scores de chaque point selon 
+    le nombre de passages par ce point*/
 
-    int row = distance(scores.begin(), result);
-    int col = distance(result->begin(), max_element(result->begin(), result->end()));
+    
+    std::vector<std::vector<int>> scores;
 
-    int N = scores.size()/2;
+    for(unsigned int i =0; i!=tab_x_y.size(); ++i)
+    {
+        for(unsigned int j = 0; j != tab_x_y[i].size(); ++j)
+        {
+            if(scores.empty()==1)
+            {
+                
+                for(int m = -N; m != N+1; ++m)
+                {
+                    std::vector<int> v1;
 
-    Point m_p = Point(row-N, col-N);
+                    for(int p = -N; p != N+1; ++p)
+                    {
+                        if (p == tab_x_y[i][j].x*m+tab_x_y[i][j].y)
+                        {
+                            v1.push_back(1);
+                        }
+                        else
+                        {
+                            v1.push_back(0);
+                        }
+                    }
+                    scores.push_back(v1);
+                }
+            }
+            else
+            {
+                for(int m = -N; m != N+1; ++m)
+                {
+                    for(int p = -N; p != N+1; ++p)
+                    {
+                        if (p == tab_x_y[i][j].x*m+tab_x_y[i][j].y)
+                        {
+                            scores[m+N][p+N] += 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-    return m_p;
+    return scores;
 }
 
 std::vector<std::vector<int>> Point::Droite_detectee_m_p(std::vector<std::vector<int>> scores, Point m_p, std::vector<Point> tab_x_y)
@@ -150,13 +188,82 @@ std::vector<std::vector<int>> Point::Droite_detectee_m_p(std::vector<std::vector
     return droite_detectee;  
 }
 
-std::vector<std::vector<int>> Point::Hough_r_theta(std::vector<Point> tab_x_y)
+
+std::vector<std::vector<int>> Point::Droite_detectee_m_p(std::vector<std::vector<int>> scores, std::vector<Point>  scores_max, std::vector<std::vector<Point>> tab_x_y)
+{
+    int N = scores.size()/2;
+
+    std::vector<std::vector<int>> droite_detectee;
+
+    for(unsigned int k = 0; k != tab_x_y.size(); ++k)
+    {
+        if(droite_detectee.empty()==1)
+        {
+            for(int x = -N; x != N+1; ++x)
+            {
+                std::vector<int> v1;
+
+                for(int y = -N; y != N+1; ++y)
+                {
+                    if (y == -scores_max[k].x*x+scores_max[k].y)
+                    {
+                        v1.push_back(1);
+                    }
+                    else
+                    {
+                        v1.push_back(0);
+                    }
+                    
+                }
+                droite_detectee.push_back(v1);
+            }
+        }
+
+        else
+        {  
+            for(int x = -N; x != N+1; ++x)
+            {
+                for(int y = -N; y != N+1; ++y)
+                {
+                    if (y == -scores_max[k].x*x+scores_max[k].y)
+                    {
+                        droite_detectee[x+N][y+N] += 1;
+                    }
+                }
+            }
+            
+        }
+        
+        if(droite_detectee.empty()==0)
+        {  
+            for(int x = -N; x != N+1; ++x)
+            {
+                for(int y = -N; y != N+1; ++y)
+                {
+                    for(unsigned int j = 0; j != tab_x_y[k].size(); ++j)
+                    {
+                        Point p = Point(x,y);
+                        if ((p == tab_x_y[k][j])==1)
+                        {   
+                            droite_detectee[x+N][y+N] += 1;
+                        }
+                    }
+                }
+            }
+            
+        }
+        
+    }
+    
+    return droite_detectee;  
+}
+
+std::vector<std::vector<int>> Point::Hough_r_theta(std::vector<Point> tab_x_y, int N)
 {
     /*Fonction qui calcule l'ensemble de points (m,p) qui vérifient 
     l'équation p = -xm+y pour chaque point de tab_x_y et renvoie tableau 2D contenant les scores 
     de chaque point selon le nombre de passages par ce point*/
 
-    int N = 2;
     int R = 2*N+1;
     double pas_theta = M_PI/6;
 
@@ -184,7 +291,7 @@ std::vector<std::vector<int>> Point::Hough_r_theta(std::vector<Point> tab_x_y)
             std::cout<<min_r<<std::endl;
             std::cout<<max_r<<std::endl;
 
-            for(int rr =0; rr!= r.size(); ++rr)
+            for(unsigned int rr =0; rr!= r.size(); ++rr)
             {
                 std::vector<int> v1;
                  
@@ -228,7 +335,51 @@ Point::~Point(){}
 
 /*************Fonctions hors classe***************/
 
-void tracer_droite(std::vector<std::vector<int>> scores, const char* filename)
+Point Point_score_max(std::vector<std::vector<int>> scores)
+{
+    auto result = max_element(scores.begin(), scores.end(), [](const std::vector<int>& a, const std::vector<int>& b) {
+            return *max_element(a.begin(), a.end()) < *max_element(b.begin(), b.end());
+        });
+
+    int row = distance(scores.begin(), result);
+    int col = distance(result->begin(), max_element(result->begin(), result->end()));
+
+    int N = scores.size()/2;
+
+    Point m_p = Point(row-N, col-N);
+
+    return m_p;
+}
+
+
+std::vector<Point> Point_score_max(std::vector<std::vector<int>> scores, std::vector<std::vector<Point>> tab_x_y)
+{
+    std::vector<Point> scores_max;
+
+    for(unsigned int i = 0; i != tab_x_y.size(); ++i)
+    {
+        auto result = max_element(scores.begin(), scores.end(), [](const std::vector<int>& a, const std::vector<int>& b) {
+            return *max_element(a.begin(), a.end()) < *max_element(b.begin(), b.end());
+        });
+
+        int row = distance(scores.begin(), result);
+        int col = distance(result->begin(), max_element(result->begin(), result->end()));
+
+        if(scores[row][col] == tab_x_y[i].size())
+        {
+            int N = scores.size()/2;
+
+            scores_max.push_back(Point(row-N, col-N));
+
+            scores[row][col] = 0;
+        }
+
+    }
+
+    return scores_max;
+}
+
+void tracer_droite(std::vector<std::vector<int>> scores, const char* filename, std::vector<Point> tab_x_y)
 {
     /*Elle crée l'image ppm à partir de la matrice des scores*/
 
@@ -243,9 +394,9 @@ void tracer_droite(std::vector<std::vector<int>> scores, const char* filename)
     file<< 250<<std::endl;
     file<<"#valeur max"<<std::endl;
 
-    for(int i = 0; i != lignes; ++i)
+    for(int i = 0; i != colonnes; ++i)
     {
-        for(int j =0; j != colonnes; ++j)
+        for(int j =0; j != lignes; ++j)
         {
             if(scores[i][j] == 0)
             {
@@ -253,17 +404,64 @@ void tracer_droite(std::vector<std::vector<int>> scores, const char* filename)
                 file<< 250<<std::endl;
                 file<< 250<<std::endl;
             }
-            else if(scores[i][j] == 1)
+            else if(scores[i][j] == tab_x_y.size())
             {
-                file<< 0<<std::endl;
+                file<< 250<<std::endl;
                 file<< 0<<std::endl;
                 file<< 0<<std::endl;
             }
             else
             {
-                file<< 250<<std::endl;
                 file<< 0<<std::endl;
                 file<< 0<<std::endl;
+                file<< 0<<std::endl;
+            }
+        }
+    }
+
+    file.close();
+
+}
+
+void tracer_droite(std::vector<std::vector<int>> scores, const char* filename, std::vector<std::vector<Point>> tab_x_y)
+{
+    /*Elle crée l'image ppm à partir de la matrice des scores*/
+
+    const int lignes = scores[0].size();
+    const int colonnes = scores.size();
+
+    std::ofstream file(filename, std::ios::out | std::ios::binary);
+    file<<"P3"<<std::endl;
+    file<<"#dimensions de l'image"<<std::endl;
+    file<< lignes<< " " << colonnes<<std::endl;
+    file<<"#valeur max"<<std::endl;
+    file<< 250<<std::endl;
+    file<<"#valeur max"<<std::endl;
+
+    for(unsigned int k = 0; k != tab_x_y.size(); ++k)
+    {
+        for(int i = 0; i != colonnes; ++i)
+        {
+            for(int j =0; j != lignes; ++j)
+            {
+                if(scores[i][j] == 0)
+                {
+                    file<< 250<<std::endl;
+                    file<< 250<<std::endl;
+                    file<< 250<<std::endl;
+                }
+                else if(scores[i][j] == tab_x_y[k].size())
+                {
+                    file<< 250<<std::endl;
+                    file<< 0<<std::endl;
+                    file<< 0<<std::endl;
+                }
+                else
+                {
+                    file<< 0<<std::endl;
+                    file<< 0<<std::endl;
+                    file<< 0<<std::endl;
+                }
             }
         }
     }

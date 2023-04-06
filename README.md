@@ -26,6 +26,30 @@ Nous avons implémenté différentes surcharges d'affichages hors de la classe:
 
 Celles-ci serviront à l'affichage des points, vecteurs d'entiers, de points, ou des vecteur de vecteurs d'entiers.
 
-### FONCTION HOUGH_X_Y
+### FONCTIONS
+- ### HOUGH_X_Y
 
-Celle-ci était relativement facile à implémenter. Elle prend en paramètre le vecteur de points dont on veut détecter la droite. 
+Celle-ci était relativement facile à implémenter (vu que nos coordonnées sont des entiers). Elle prend en paramètre le vecteur de points dont on veut détecter la droite, et un N qui nous servira à fixer la taille de l'image. La fonction Hough_x_y retourne la matrice des scores. 
+
+Dans la fonction, nous créons un vecteur de vecteurs qui est notre matrice des scores. 
+
+Pour chaque point de notre vecteur des points:
+- Si la matrice scores est vide, pour chaque m compris entre (-N,N) on crée un vecteur v et pour chaque p entre (-N,N), si le couple (m, p) vérifie l'équation p = -x*m+y, on ajoute 1 au vecteur de la matrice, sinon on ajoute 0.
+
+- Sinon pour chaque m et p entre (-N,N) qui vérifient l'équation, on parcourt scores et on augmente le score à la case de 1.
+
+Ceci est la version qu'on a faite pour détecter un droite. Elle nous a servi de tremplin pour écrire la version qui détecte un ensemble de droites.
+
+- ### HOUGH_R_THETA
+
+Cette fonction a été beaucoup plus compliquée pour moi à cause de l'aspect cyclique de  l'équation. On ne savait pas s'il fallait utiliser la longueur PI ou l'angle. L'aspect des points sur l'image indiquait quelque chose de période, oui, mais n'avait pas l'aspect sinusoïdale recherché. 
+
+Cette fonction ne fonctionne toujours pas. 
+
+- ### POINT_SCORE_MAX
+
+Prend en paramètre la matrice des scores obtenue avec la transformée de Hough et retourne le point ayant le score maximal.
+
+- ### DROITE_DETECTEE_M_P
+
+Prends en paramètre la matrice des scores, le point 
