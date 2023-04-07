@@ -74,3 +74,59 @@ Outre la fonction Hough_r_theta, nous avons eu des petites difficultés pour com
 Nous espérons avoir assez compris le sujet et avoir fourni un travail convenable. Bien sûr, nous n'avons pas tout fait, comme la suppression des doublons et le choix de la meilleure droite; Je suppose que cette partie avait plus de rapport avec Hough_r_theta, au vu de l'aspect périodique de celle-ci. 
 
 Nous n'avons pas encore perfectionné l'affichage des droites.
+
+## MODE D'UTILISATION
+
+Comme expliqué au début, nous utilisons des points et non des images. Alors pour pouvoir utiliser le code, il vous faudra créer des points. Ces points seront les points des droites à détecter. Ensuite les stocker dans un vecteur qui représentera du coup votre droite, ici "toto". Si il y a plusieurs droites à détecter, créez plusieurs vecteurs avec leurs points et stocker le tout dans un vecteur qui vous servira du coup de "plan" (x,y) avec ses droites, ici "titi".
+
+- Après que vous ayez posé votre base, vous pourrez appeler la fonction:
+
+std::vector<std::vector<$int$>> tab_scores = A.Hough_x_y(toto, N); 
+
+ou
+
+std::vector<std::vector<$int$>> tab_scores = A.Hough_x_y(titi, N); 
+
+N étant un entier positif qui servira à fixer la taille de la matrice des scores. 
+
+ATTENTION, les fonctions de Hough sont des fonctions de la classe, il faut donc les appeler  avec un point, en l'occurence ici, A. Peu importe le point choisi, il n'aura pas d'impacte sur la fonction.Ceci vous sortira la matrice des scores. 
+
+- Il faudra ensuite chercher le(s) point(s) (m,p) correspindant(s) au(x) score(s) maximal(aux) de cette matrice (dans le cas d'un plan de droites). C'est ce point (m,p) qui vous permettra de retracer la(les) droite(s) détectée(s).
+
+Vous appelerez pour ça 
+
+Point inter = Point_score_max(tab_scores);
+
+ou
+
+std::vector<$Point$> inter = Point_score_max(tab_scores, titi);
+
+- Vous pouvez maintenant chercher la matrice de la(des) droite(s) détectée(s).
+
+std::vector<std::vector<$int$>> droite_A_B = A.Droite_detectee_m_p(tab_scores, inter, toto);
+
+ou
+
+std::vector<std::vector<$int$>> droite_A_B = A.Droite_detectee_m_p(tab_scores, inter, titi);
+
+
+ATTENTION, les fonctions Droite_detectee_m_p sont des fonctions de la classe, il faut donc les appeler  avec un point, en l'occurence ici, A. Peu importe le point choisi, il n'aura pas d'impacte sur la fonction.
+
+- Et vous tracez:
+
+tracer_droite(droite_A_B, "droite_détectée.ppm");
+
+ou
+
+tracer_droite(droite_A_B, "droites_détectées.ppm", titi);
+
+- Pour compiler tout ça, vous utiliserez la commande g++:
+
+g++ -Wall -std=c++11 main.cpp -o main
+
+- et pour executer:
+
+./main
+
+
+VOILI VOILOU~ ~ 

@@ -5,7 +5,6 @@
 #include <cstdlib>
 #include <vector>
 #include <algorithm>
-#include <opencv2/opencv.hpp>
 
 
 //on définira dans ce fichier les corps des fonctions
@@ -47,6 +46,8 @@ void tracer_droite(std::vector<std::vector<int>> scores, const char* filename, s
 void tracer_droite(std::vector<std::vector<int>> scores, const char* filename, std::vector<std::vector<Point>> tab_x_y);  //surcharge pour plusieurs droites
 
 
-
+void affiche(std::vector<Point> vect);
+void affiche(std::vector<int> vect);
+void affiche(std::vector<std::vector<int>> vect);
 
 #endif

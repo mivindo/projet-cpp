@@ -1,4 +1,4 @@
-#include "fichier.cpp"
+#include "fichier.hpp"
 
 int main()
 {
@@ -46,11 +46,11 @@ int main()
 
     // std::vector<Point> inter = Point_score_max(tab_scores, titi);
 
-    // affiche(inter);
-
     // std::vector<std::vector<int>> droite_A_B = A.Droite_detectee_m_p(tab_scores, inter, titi);
 
-    // tracer_droite(droite_A_B, "droite_détectée.ppm", titi);
+    // tracer_droite(droite_A_B, "droites_détectées.ppm", titi);
+
+    // affiche(inter);
 
     // affiche(tab_scores);
 
