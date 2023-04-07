@@ -23,21 +23,21 @@ int main()
 
     /************** DÉTECTION SUR UNE DROITE ***************/
 
-    // std::vector<std::vector<int>> tab_scores = A.Hough_x_y(toto,N);
+    std::vector<std::vector<int>> tab_scores = A.Hough_x_y(toto,N);
 
-    // Point inter = Point_score_max(tab_scores);
+    Point inter = Point_score_max(tab_scores);
 
-    // std::cout<<inter<<std::endl;
+    std::cout<<inter<<std::endl;
 
-    // std::vector<std::vector<int>> droite_A_B = A.Droite_detectee_m_p(tab_scores, inter, toto);
+    std::vector<std::vector<int>> droite_A_B = A.Droite_detectee_m_p(tab_scores, inter, toto);
 
-    // tracer_droite(droite_A_B, "droite_détectée.ppm");
+    tracer_droite(droite_A_B, "droite_détectée.ppm", toto);
 
-    // affiche(tab_scores);
+    affiche(tab_scores);
 
-    // affiche(droite_A_B);
+    affiche(droite_A_B);
 
-    // tracer_droite(tab_scores, "test1.ppm");
+    tracer_droite(tab_scores, "test1.ppm", toto);
 
 
     /************** DÉTECTION SUR UN ENSEMBLE DE DROITES ***************/

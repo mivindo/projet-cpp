@@ -34,13 +34,13 @@ class Point
     
     
     
-    friend std::ostream & operator <<(std::ostream & out, const Point & p);
+    friend std::ostream & operator <<(std::ostream & out, const Point & p);  
 
     ~Point();
 };
 
 Point Point_score_max(std::vector<std::vector<int>> scores);
-std::vector<Point> Point_score_max_(std::vector<std::vector<int>> scores, std::vector<std::vector<Point>> tab_x_y);
+std::vector<Point> Point_score_max_(std::vector<std::vector<int>> scores, std::vector<std::vector<Point>> tab_x_y);  //surcharge pour plusieurs droites
 
 void tracer_droite(std::vector<std::vector<int>> scores, const char* filename, std::vector<Point> tab_x_y);
 void tracer_droite(std::vector<std::vector<int>> scores, const char* filename, std::vector<std::vector<Point>> tab_x_y);  //surcharge pour plusieurs droites

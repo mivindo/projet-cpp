@@ -122,7 +122,7 @@ tracer_droite(droite_A_B, "droites_détectées.ppm", titi);
 
 - Pour compiler tout ça, vous utiliserez la commande g++:
 
-g++ -Wall -std=c++11 main.cpp -o main
+g++ -Wall -std=c++11 main.cpp fichier.hpp -o main
 
 - et pour executer:
 
